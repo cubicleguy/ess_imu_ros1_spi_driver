@@ -2,16 +2,17 @@
 //
 //	hcl_spi.h - Seiko Epson Hardware Control Library
 //
-//	This layer of indirection is added to allow the sample code to call generic
-//	spi functions to work on multiple hardware platforms.
+//	This layer of indirection is added to allow the sample code to call
+// generic spi functions to work on multiple hardware platforms.
 //
 //
 //  THE SOFTWARE IS RELEASED INTO THE PUBLIC DOMAIN.
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-//  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT,
-//  SECURITY, SATISFACTORY QUALITY, AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT
-//  SHALL EPSON BE LIABLE FOR ANY LOSS, DAMAGE OR CLAIM, ARISING FROM OR IN CONNECTION
-//  WITH THE SOFTWARE OR THE USE OF THE SOFTWARE.
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  NONINFRINGEMENT, SECURITY, SATISFACTORY QUALITY, AND FITNESS FOR A
+//  PARTICULAR PURPOSE. IN NO EVENT SHALL EPSON BE LIABLE FOR ANY LOSS, DAMAGE
+//  OR CLAIM, ARISING FROM OR IN CONNECTION WITH THE SOFTWARE OR THE USE OF THE
+//  SOFTWARE.
 //
 //==============================================================================
 #ifndef HCL_SPI_H_
@@ -33,4 +34,4 @@ int spiInit(uint8_t mode, uint32_t khzspeed);
 int spiRelease(void);
 uint8_t spiTransfer(uint8_t value);
 
-#endif
+#endif /* HCL_SPI_H_ */

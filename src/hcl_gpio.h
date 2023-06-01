@@ -39,6 +39,6 @@ uint8_t gpioGetPinLevel(uint8_t pin);
 #define EPSON_RESET 0
 #define EPSON_DRDY 0
 #define EPSON_CS 0
-#endif
+#endif  // RPI
 
 #endif

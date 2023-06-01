@@ -1,19 +1,27 @@
 <?xml version="1.0"?>
 <package>
-  <name>epson_imu_spi_driver</name>
-  <version>1.2.0</version>
-  <description>C++ Wrapper for ROS1 node of epson_imu_spi_driver package</description>
+  <name>ess_imu_ros1_spi_driver</name>
+  <version>1.3.0</version>
+  <description>ROS1 package for Epson IMU using SPI interface based on C++ wrapper of Linux C driver</description>
 
-  <maintainer email="jkeller2@andrew.cmu.edu">John Keller</maintainer>
   <maintainer email="raymond.chow@ea.epson.com">Raymond Chow</maintainer>
   <license>BSD</license>
+  <license>Public Domain</license>
+
+  <url type="website">https://wiki.ros.org/ess_imu_ros1_spi_driver</url>
+  <url type="repository">https://github.com/cubicleguy/ess_imu_ros1_spi_driver.git</url>
+
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>roscpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>tf2</build_depend>
 
   <run_depend>roscpp</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>tf2</run_depend>
 </package>

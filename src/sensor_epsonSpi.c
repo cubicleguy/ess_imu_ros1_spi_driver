@@ -4,11 +4,12 @@
 //
 //
 //  THE SOFTWARE IS RELEASED INTO THE PUBLIC DOMAIN.
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-//  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT, 
-//  SECURITY, SATISFACTORY QUALITY, AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT
-//  SHALL EPSON BE LIABLE FOR ANY LOSS, DAMAGE OR CLAIM, ARISING FROM OR IN CONNECTION
-//  WITH THE SOFTWARE OR THE USE OF THE SOFTWARE.
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  NONINFRINGEMENT, SECURITY, SATISFACTORY QUALITY, AND FITNESS FOR A
+//  PARTICULAR PURPOSE. IN NO EVENT SHALL EPSON BE LIABLE FOR ANY LOSS, DAMAGE
+//  OR CLAIM, ARISING FROM OR IN CONNECTION WITH THE SOFTWARE OR THE USE OF THE
+//  SOFTWARE.
 //
 //==============================================================================
 #include "hcl.h"
@@ -118,8 +119,7 @@ unsigned short registerRead16NoId(unsigned char regAddr, unsigned int verbose) {
   deselEpson();
 
   if (verbose) {
-    printf("REG[0x%02X] > 0x%02X%02X\t", regAddr, rxData[0],
-           rxData[1]);
+    printf("REG[0x%02X] > 0x%02X%02X\t", regAddr, rxData[0], rxData[1]);
   }
   return (rxData[0] << 8 | rxData[1]);
 }
@@ -292,7 +292,7 @@ void populateEpsonData(struct EpsonOptions options,
   // stores the sensor data array index when parsing out data fields
   int idx = 0;
 
-#ifdef V340
+#ifdef V340PDD0
   // Fixed packet format except for enabling/disabling count_out
   unsigned short ndflags = rxdata[idx];
   epson_data->ndflags = ndflags;
@@ -335,11 +335,21 @@ void populateEpsonData(struct EpsonOptions options,
   if (options.temp_out) {
     if (options.temp_bit) {
       int temp = (rxdata[idx] << 8 * 2) + rxdata[idx + 1];
+#if defined G330PDG0 || defined G366PDG0 || defined G370PDG0 || defined G370PDT0
+      epson_data->temperature = (temp)*EPSON_TEMP_SF / 65536 + 25;
+#else
       epson_data->temperature = (temp - 172621824) * EPSON_TEMP_SF / 65536 + 25;
+#endif  // defined G330PDG0 || defined G366PDG0 || defined G370PDG0 || defined
+        // G370PDT0
       idx += 2;
     } else {
       short temp = rxdata[idx];
+#if defined G330PDG0 || defined G366PDG0 || defined G370PDG0 || defined G370PDT0
+      epson_data->temperature = (temp)*EPSON_TEMP_SF + 25;
+#else
       epson_data->temperature = (temp - 2634) * EPSON_TEMP_SF + 25;
+#endif  // defined G330PDG0 || defined G366PDG0 || defined G370PDG0 || defined
+        // G370PDT0
       idx++;
     }
 #ifdef DEBUG
@@ -456,17 +466,17 @@ void populateEpsonData(struct EpsonOptions options,
 
   if (options.qtn_out) {
     if (options.qtn_bit) {
-	  int qtn0 = (rxdata[idx] << 8 * 2) + rxdata[idx + 1];
+      int qtn0 = (rxdata[idx] << 8 * 2) + rxdata[idx + 1];
       int qtn1 = (rxdata[idx + 2] << 8 * 2) + rxdata[idx + 3];
       int qtn2 = (rxdata[idx + 4] << 8 * 2) + rxdata[idx + 5];
-	  int qtn3 = (rxdata[idx + 6] << 8 * 2) + rxdata[idx + 7];
+      int qtn3 = (rxdata[idx + 6] << 8 * 2) + rxdata[idx + 7];
       epson_data->qtn0 = (double)qtn0 / 1073741824;
       epson_data->qtn1 = (double)qtn1 / 1073741824;
       epson_data->qtn2 = (double)qtn2 / 1073741824;
       epson_data->qtn3 = (double)qtn3 / 1073741824;
       idx += 8;
     } else {
-	  short qtn0 = rxdata[idx];
+      short qtn0 = rxdata[idx];
       short qtn1 = rxdata[idx + 1];
       short qtn2 = rxdata[idx + 2];
       short qtn3 = rxdata[idx + 3];
@@ -547,16 +557,17 @@ int sensorDataReadBurstNOptions(struct EpsonOptions options,
   unsigned int data_length = sensorDataByteLength(options) / 2;
 
 // Burst read the sensor data based on calculated burst size from options struct
-#ifdef V340
+#ifdef V340PDD0
   sensorDataReadN(rxdata, data_length, 0x00);
 #else
   sensorDataReadBurstN(rxdata, data_length);
-#endif
+#endif  // V340PDD0
 
-#ifdef V340
+// V340 does not support checksum, so just populate sensor data in structure
+#ifdef V340PDD0
   populateEpsonData(options, epson_data);
   return OK;
-#endif
+#endif  // V340PDD0
   if (options.checksum_out == 1) {
     unsigned short checksum = 0;
     for (unsigned int i = 0; i < data_length - 1; i++) {
